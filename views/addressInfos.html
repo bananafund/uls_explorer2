@@ -1,0 +1,73 @@
+<div class="container" style="padding-top: 10px;">
+
+    <h1><i class="fa fa-code"></i> Address
+        <small>View information about an Address</small>
+    </h1>
+    <hr>
+    <div id="address" class="blockdiv">
+      <div style="font-size: 32px; font-weight: lighter; margin-bottom: 15px; display: inline-block;" align="center"> {{ addressId }}</div><br /><br />
+        <table class="table table-striped">
+            <tbody><tr>
+                <th colspan="2" style="text-align:left">Summary</th>
+            </tr>
+            <tr>
+                <td>Current Balance</td>
+                <td><span style="font-size: 24px; font-weight: lighter;">{{ balance }} ULS</span></td>
+            </tr>
+            <tr>
+                <td>Transaction Count <em>(# of outgoing TXs)</em></td>
+                <td>{{ txCount }}</td>
+            </tr>
+            <tr>
+                <td>Code</td>
+                <td><textarea style="min-width: 100%; background-color: #222; color: #08d410;">{{ code }}</textarea></td>
+            </tr>
+          </tbody>
+      </table>
+      <hr>
+
+      <h2 style="margin-top: 30px;">
+          <i class="fa fa-exchange"></i> Transactions
+          <small>- containing current address</small>
+      </h2>
+
+      <div ng-repeat="tx in transactions">
+          <hr>
+          <table class="table table-striped">
+              <tbody>
+                  <tr>
+                      <th colspan="2" style="text-align:left">Transaction #{{$index+1}}</th>
+                  </tr>
+                  <tr>
+                      <td>Hash #</td>
+                      <td><a href="./#/tx/{{tx.hash}}">{{tx.hash}}</a></td>
+                  </tr>
+                  <tr>
+                      <td>From</td>
+                      <td><a href="./#/address/{{tx.from}}">{{tx.from}}</a></td>
+                  </tr>
+                  <tr>
+                      <td>To</td>
+                      <td><a href="./#/address/{{tx.to}}">{{tx.to}}</a></td>
+                  </tr>
+                  <tr>
+                      <td>Value</td>
+                      <td>{{tx.value}}</td>
+                  </tr>
+                  <tr>
+                      <td>Token</td>
+                      <td><a href="./#/address/{{tx.token}}">{{tx.token}}</a></td>
+                  </tr>
+                  <tr>
+                      <td>Date</td>
+                      <td>{{ tx.timestamp * 1000 | date:'medium' }}</td>
+                  </tr>
+                  <tr>
+                      <td>Block #</td>
+                      <td><a href="./#/block/{{tx.block}}">{{tx.block}}</a></td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+    </div>
+</div>
