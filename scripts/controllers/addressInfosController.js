@@ -32,10 +32,15 @@ angular.module('ethExplorer')
                     .then(function(result){
                         $scope.code = result;
                     });
-                getTokens()
-                    .then(function(result){
-                        $scope.tokens=result;
-                    });
+                // getTokens()
+                //     .then(function(result){
+                //         $scope.tokens=result;
+                //     });
+                //交易记录
+                getTransactions().then(function (result) {
+                    $scope.transactions = result;
+                });
+
                 getETHUSD();
             } else {
                 $location.path("/");
@@ -72,59 +77,45 @@ angular.module('ethExplorer')
                 return deferred.promise;
             }
 
-            function getTransactions(tokens){
+            function getTransactions(){
                 var deferred = $q.defer();
-                tokens['0x45d7bf3e5d7d414e30bf9eb82406e9bed19bb88b'] = {
-                    decimals: 18,
-                    symbol: 'TT',
-                };
-                $http.get('http://rpc.ulschain.com:30003/transactions/'+$scope.addressId.toLowerCase()+'.json')
-                    .then(function (result) {
-                        for (var i = 0; i < result.data.length; i++) {
-                            var data = result.data[i];
-                            var token = data.token.toLowerCase();
-                            if (token) {
-                                var token = tokens[token] || {
-                                    decimals: 18,
-                                    symbol: 'UNKNOWN',
-                                }
-                                var decimals = token.decimals;
-                                var symbol = token.symbol;
-                            } else {
-                                var decimals = 18;
-                                var symbol = 'ULS';
+                $http.jsonp('http://newcoin.ulschain.com:30003/uls/tx/log?callback=JSON_CALLBACK&num=10&address='+$scope.addressId.toLowerCase()+'&page=1&chain=uls')
+                    .success(function(result) {
+                        for (var i = 0; i < result.length; i++) {
+
+                            if(result[i].token.toLowerCase() =='tt'){
+                                result[i].tokenAddress = '0x45d7bf3e5d7d414e30bf9eb82406e9bed19bb88b';
+                            }else if(result[i].token.toLowerCase() =='vt'){
+                                result[i].tokenAddress = '0x6126d885eb667e86cfde7ec9b9fe9fafb05ce070';
+                            }else if(result[i].token.toLowerCase() =='lt'){
+                                result[i].tokenAddress = '0x0713bcac2eaa79215166a739d9f2b94b9969e0a6';
+                            }else if(result[i].token.toLowerCase() =='clt'){
+                                result[i].tokenAddress = '0x5bd1a390f0b0e61d4bb13fdbcf7da07b3ab4501c';
+                            }else{
+
+                            }
+                            result[i].num = result[i].num + ' ' + result[i].token.toUpperCase();
+
+                            if(result[i].success ==1){
+
+                                result[i].success = 'success';
+                            }else{
+                                result[i].success = 'fail';
                             }
 
-                            var value = new BigNumber(result.data[i].value);
-                            var d = new BigNumber(10).pow(decimals);
-                            var value = value.div(d).toString();
-
-                            result.data[i].value = value + ' ' + symbol;
                         }
-                        deferred.resolve(result.data);
-                        // deferred.reject(error);
-                    });
+                        deferred.resolve(result);
+                    }).error(function (e) {
+                        console.log('打印错误！');
+                    console.log(e);
+                });;
+                    
 
                 return deferred.promise;
             }
-            function getTokens(){
-                var deferred = $q.defer();
-                $http.get('http://rpc.ulschain.com:30003/tokens.json')
-                    .then(function (result) {
-                        var tokens = [];
-                        for (var i = 0; i < result.data.length; i++) {
-                            var data = result.data[i];
-                            tokens[data.token] = data;
-                        }
-                        deferred.resolve(tokens);
 
-                        getTransactions(tokens)
-                            .then(function(result){
-                        $scope.transactions=result;
-                    });
-                    });
-
-                return deferred.promise;
+            function f(data) {
+                return data
             }
         };
         $scope.init();

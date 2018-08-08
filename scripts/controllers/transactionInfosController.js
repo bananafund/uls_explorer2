@@ -26,6 +26,7 @@ angular.module('ethExplorer')
             else{
               $scope.blockNumber ='pending';
             }
+
             $scope.from = result.from;
             $scope.gas = result.gas;
             //$scope.gasPrice = result.gasPrice.c[0] + " WEI";
@@ -71,9 +72,20 @@ angular.module('ethExplorer')
             }
           });
 
+          getTxResult().then(function (result) {
+              console.log(result);
+              if(result.status == '0x1'){
+                  $scope.status = 'success';
+              }else{
+                  $scope.status = 'fail';
+              }
+
+          });
+
       } else {
         $location.path("/"); // add a trigger to display an error message so user knows he messed up with the TX number
       }
+
 
       function getTransactionInfos(){
         var deferred = $q.defer();
@@ -89,6 +101,20 @@ angular.module('ethExplorer')
         return deferred.promise;
 
       }
+
+    //  获取交易结果的成功或者失败
+        function getTxResult() {
+            var deferred = $q.defer();
+            web3.eth.getTransactionReceipt($scope.txId,function (error,result) {
+                if(!error){
+                    deferred.resolve(result);
+                }
+                else{
+                    deferred.reject(error);
+                }
+            })
+            return deferred.promise;
+        }
 
     };
     $scope.init();

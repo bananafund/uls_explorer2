@@ -40,8 +40,9 @@
                   </tr>
                   <tr>
                       <td>Hash #</td>
-                      <td><a href="./#/tx/{{tx.hash}}">{{tx.hash}}</a></td>
+                      <td><a href="./#/tx/{{tx.tx_hash}}">{{tx.tx_hash}}</a></td>
                   </tr>
+
                   <tr>
                       <td>From</td>
                       <td><a href="./#/address/{{tx.from}}">{{tx.from}}</a></td>
@@ -52,19 +53,29 @@
                   </tr>
                   <tr>
                       <td>Value</td>
-                      <td>{{tx.value}}</td>
+                      <td>{{tx.num}}</td>
                   </tr>
-                  <tr>
+                  <tr ng-if="tx.tokenAddress">
                       <td>Token</td>
-                      <td><a href="./#/address/{{tx.token}}">{{tx.token}}</a></td>
+
+                      <td><a href="./#/address/{{tx.tokenAddress}}">{{tx.tokenAddress}}</a></td>
+
                   </tr>
                   <tr>
                       <td>Date</td>
-                      <td>{{ tx.timestamp * 1000 | date:'medium' }}</td>
+                      <td>{{ tx.tx_time * 1000 | date:'medium' }}</td>
                   </tr>
                   <tr>
                       <td>Block #</td>
                       <td><a href="./#/block/{{tx.block}}">{{tx.block}}</a></td>
+                  </tr>
+                  <tr>
+                      <td>Result</td>
+                      <td>{{ tx.success }}</td>
+                  </tr>
+                  <tr>
+                      <td>Fee</td>
+                      <td>{{ tx.fee }} ULS</td>
                   </tr>
               </tbody>
           </table>
